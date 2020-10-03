@@ -6,15 +6,18 @@ import 'package:flutter_scan_bluetooth/flutter_scan_bluetooth.dart';
 void main() => runApp(new MyApp());
 
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => new _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
   String _data = '';
-  bool _scanning = false;
+  String _a = '';
+  String _b = 'A';
+  String _c = 'B';
+  String _outtime = '';
+
+  //bool _scanning = false;
   FlutterScanBluetooth _bluetooth = FlutterScanBluetooth();
 
   @override
@@ -23,7 +26,17 @@ class _MyAppState extends State<MyApp> {
 
     _bluetooth.devices.listen((device) {
       setState(() {
-        _data += device.name + ' (${device.address})\n' + DateTime.now().toString() + '\n\n';
+        _data += device.name +
+            ' (${device.address})\n' +
+            DateTime.now().toString() +
+            '\n\n';
+        if (_a == '' && _data!='') {
+          _a = _data;
+          _b = '(${device.address})';}
+          _c = '(${device.address})';
+        if (_c!=_b && _c!= 'B')
+          _outtime = DateTime.now().toString();
+
         print(_data);
         print(DateTime.now());
       });
@@ -31,9 +44,9 @@ class _MyAppState extends State<MyApp> {
 
     _bluetooth.startScan(pairedDevices: false);
 
-    setState(() {
+ /*   setState(() {
       _scanning = true;
-    });
+    });*/
     /* _bluetooth.scanStopped.listen((device) {
       setState(() {
         _scanning = false;
@@ -45,7 +58,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       home: new Scaffold(
         appBar: new AppBar(
           title: const Text('Bluetooth detection log'),
@@ -55,7 +68,8 @@ class _MyAppState extends State<MyApp> {
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Text(_data ),
+                Text(_data),
+                Text(_a+_outtime+'(Out time)'),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
@@ -63,12 +77,13 @@ class _MyAppState extends State<MyApp> {
                         child: Text('scan now'),
                         onPressed: () async {
                           try {
-                            if (_scanning) {
+                            if (true) {
                               await _bluetooth.startScan(pairedDevices: false);
                               debugPrint("scanning restarted");
                               setState(() {
-                                // _data = '';
-                                _scanning = true;
+                                 _data = '';
+                                // _outtime = '';
+                                //_scanning = true;
                               });
                             }
                             /*else {
@@ -96,8 +111,8 @@ class MyWidget extends StatelessWidget {
     DateTime now = DateTime.now();
     return Text(
       ' Date ${now.day}:${now.month}:${now.year}'
-          '\t'
-          'time ${now.hour}:${now.minute}:${now.second}',
+      '\t'
+      'time ${now.hour}:${now.minute}:${now.second}',
       style: TextStyle(color: Colors.red),
     );
   }
